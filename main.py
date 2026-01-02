@@ -46,7 +46,7 @@ class Speedtest(ActionBase):
             self.show_error()
             self.set_bottom_label(None)
             self.image_state = "error"
-        
+
     def on_ready(self):
         self.set_media(media_path=os .path.join(self.plugin_base.PATH, "assets", "speed.png"), size=0.8, valign=-1, update=True)
         self.set_bottom_label("Start")
@@ -66,6 +66,21 @@ class Speedtest(ActionBase):
         elif self.image_state in ["running", "error"]:
             return
 
+    def on_key_hold(self):
+        """
+        Clears the top, center, and bottom labels and restores the speed.png image.
+        """
+        self.set_top_label(None)
+        self.set_center_label(None)
+        self.set_bottom_label("Start")
+        self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "speed.png"), size=0.8, valign=-1, update=True)
+
+
+    def event_callback(self, event, data=None):
+        if event == Input.Key.Events.SHORT_UP:
+            self.on_key_down()
+        elif event == Input.Key.Events.HOLD_START:
+            self.on_key_hold()
 
     def perform_test(self):
         self.init_speedtest()
